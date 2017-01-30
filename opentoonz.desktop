@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=OpenToonz
 Comment=An open-source full-featured 2D animation creation software
-Exec=opentoonz %U
+Exec=opentoonz %F
 Icon=opentoonz
 StartupNotify=false
 Terminal=false
