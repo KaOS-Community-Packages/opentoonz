@@ -1,0 +1,38 @@
+#!/bin/sh
+OPENTOONZ_BASE=$(dirname "$0")/..
+
+# test for required config files and copy if missing
+if [ ! -e "$HOME/.config/OpenToonz" ] && [ -e "/usr/share/opentoonz/stuff" ]; then
+    mkdir -p "$HOME/.config/OpenToonz"
+    cp -r /usr/share/opentoonz/stuff "$HOME/.config/OpenToonz/"
+fi
+
+if [ ! -e "$HOME/.config/OpenToonz/SystemVar.ini" ]; then
+
+    cat << EOF > "$HOME/.config/OpenToonz/SystemVar.ini"
+[General]
+OPENTOONZROOT="$HOME/.config/OpenToonz/stuff"
+OpenToonzPROFILES="$HOME/.config/OpenToonz/stuff/profiles"
+TOONZCACHEROOT="$HOME/.config/OpenToonz/stuff/cache"
+TOONZCONFIG="$HOME/.config/OpenToonz/stuff/config"
+TOONZFXPRESETS="$HOME/.config/OpenToonz/stuff/projects/fxs"
+TOONZLIBRARY="$HOME/.config/OpenToonz/stuff/projects/library"
+TOONZPROFILES="$HOME/.config/OpenToonz/stuff/profiles"
+TOONZPROJECTS="$HOME/.config/OpenToonz/stuff/projects"
+TOONZROOT="$HOME/.config/OpenToonz/stuff"
+TOONZSTUDIOPALETTE="$HOME/.config/OpenToonz/stuff/projects/studiopalette"
+EOF
+
+fi
+
+if [ ! -e "$HOME/.config/OpenToonz/stuff/projects/library" ]; then
+    mkdir -p "$HOME/.config/OpenToonz/stuff/projects/library"
+fi
+
+if [ ! -e "$HOME/.config/OpenToonz/stuff/projects/fxs" ]; then
+    mkdir -p "$HOME/.config/OpenToonz/stuff/projects/fxs"
+fi
+
+export LD_LIBRARY_PATH=${OPENTOONZ_BASE}/lib/opentoonz:${LD_LIBRARY_PATH}
+
+exec $OPENTOONZ_BASE/bin/OpenToonz_1.1 "$@"

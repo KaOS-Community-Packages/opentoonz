@@ -1,7 +1,8 @@
 pkgname=opentoonz
-pkgver=1.1.2.4a76fd8
+pkgver=1.1.2.70
 pkgrel=1
-pkgdesc="2D Animation software."
+_commit=a83fb7a965d3b36c7feba8a9781d8066fe84c3c8
+pkgdesc="2D Animation software"
 arch=('x86_64')
 url="https://github.com/opentoonz/opentoonz"
 license=('custom')
@@ -12,45 +13,46 @@ depends=(
     'lz4' 'libusb' 'libjpeg-turbo' 'glew' 'freeglut'
     'superlu'
 )
-makedepends=('cmake' 'git')
-install=opentoonz.install
+makedepends=('cmake')
 source=(
-    'git+https://github.com/opentoonz/opentoonz.git#commit=4a76fd864fcbf5a7cb75011538df2cbc05fee5a1'
+    "opentoonz.zip::https://github.com/opentoonz/opentoonz/archive/{$_commit}.zip"
     'LICENSE'
-    'opentoonz.install'
     'opentoonz.desktop'
     'opentoonz.png'
+    'opentoonz'
 )
 md5sums=(
-    'SKIP'
+    'b9a0ef2d68b7f274d8aac9adcbd7ac2d'
     '1d0fa18b46a9fbc928e04aaa7d707047'
-    '970ce10aac6dcd32cedb4c5f96977cea'
-    'b6e5170ba3f89d9ef349c0e527a319d9'
+    '3ee7eab5c4f8a7baa6642a8a1b6a16c6'
     '341056ede09b44b290e2aa46f25f127f'
+    '11176431cc99b57c875b0f8c6c57c1c4'
 )
 
 prepare() {
-    cd "${srcdir}/opentoonz/thirdparty/tiff-4.0.3"
+    cd "${srcdir}/opentoonz-${_commit}/thirdparty/tiff-4.0.3"
     ./configure --with-pic --disable-jbig
     make
     
-    cd "${srcdir}/opentoonz/toonz"
+    cd "${srcdir}/opentoonz-${_commit}/toonz"
     mkdir -p build
 }
 
 build() {
-    cd "${srcdir}/opentoonz/toonz/build"
+    cd "${srcdir}/opentoonz-${_commit}/toonz/build"
     cmake ../sources -DCMAKE_INSTALL_PREFIX=/usr
     make
 }
 
 package() {
-    cd "${srcdir}/opentoonz/toonz/build"
+    cd "${srcdir}/opentoonz-${_commit}/toonz/build"
     make DESTDIR="${pkgdir}/" install
-    install -dm755 "${pkgdir}"/usr/share/licenses/opentoonz
-    install -m644 ../../../LICENSE "${pkgdir}"/usr/share/licenses/opentoonz
-    install -dm755 "${pkgdir}"/usr/share/applications
-    install -m644 ../../../opentoonz.desktop "${pkgdir}"/usr/share/applications
-    install -dm755 "${pkgdir}"/usr/share/icons/hicolor/32x32/apps
-    install -m644 ../../../opentoonz.png "${pkgdir}"/usr/share/icons/hicolor/32x32/apps
+    install -dm755 "${pkgdir}/usr/share/licenses/opentoonz"
+    install -m644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/opentoonz"
+    install -dm755 "${pkgdir}/usr/share/applications"
+    install -m644 "${srcdir}/opentoonz.desktop" "${pkgdir}/usr/share/applications"
+    install -dm755 "${pkgdir}/usr/share/icons/hicolor/32x32/apps"
+    install -m644 "${srcdir}/opentoonz.png" "${pkgdir}/usr/share/icons/hicolor/32x32/apps"
+    install -dm755 "${pkgdir}/usr/bin"
+    install -m755 "${srcdir}/opentoonz" "${pkgdir}/usr/bin"
 }
